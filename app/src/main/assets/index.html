@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MédExpert - Référence Clinique</title>
+    <style>
+        :root {
+            --primary: #1e5f74;
+            --secondary: #2c6f8c;
+            --accent: #3a8bc2;
+            --light: #e3f2fd;
+            --warning: #ffc107;
+            --danger: #e53935;
+            --success: #43a047;
+            --dark: #0a2e47;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1e5f74 0%, #2c6f8c 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 30px 0;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .tool-card {
+            background: rgba(255,255,255,0.1);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .tool-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .tool-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        .calculator {
+            background: white;
+            color: #333;
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 30px;
+            display: none;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #1e5f74;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        
+        .btn {
+            background: #1e5f74;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            width: 100%;
+        }
+        
+        .result {
+            background: #e8f4fc;
+            color: #1e5f74;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 4px solid #1e5f74;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏥 MédExpert</h1>
+            <p>Outils cliniques pour professionnels de santé</p>
+        </div>
+        
+        <div class="tools-grid">
+            <div class="tool-card" onclick="showCalculator('pam')">
+                <div class="tool-icon">💓</div>
+                <h3>Pression Artérielle Moyenne</h3>
+                <p>Calculateur PAM</p>
+            </div>
+            
+            <div class="tool-card" onclick="showCalculator('gcs')">
+                <div class="tool-icon">🧠</div>
+                <h3>Score de Glasgow</h3>
+                <p>Évaluation neurologique</p>
+            </div>
+            
+            <div class="tool-card" onclick="showCalculator('chads')">
+                <div class="tool-icon">❤️</div>
+                <h3>CHA₂DS₂-VASc</h3>
+                <p>Risque thrombo-embolique</p>
+            </div>
+        </div>
+        
+        <div id="pam-calc" class="calculator">
+            <h2>Calculateur PAM</h2>
+            <div class="input-group">
+                <label>PAS (mmHg)</label>
+                <input type="number" id="pas" value="120">
+            </div>
+            <div class="input-group">
+                <label>PAD (mmHg)</label>
+                <input type="number" id="pad" value="80">
+            </div>
+            <button class="btn" onclick="calculatePAM()">Calculer</button>
+            <div class="result" id="pam-result"></div>
+        </div>
+        
+        <div id="gcs-calc" class="calculator">
+            <h2>Score de Glasgow</h2>
+            <div class="input-group">
+                <label>Ouverture des yeux</label>
+                <select id="gcs-e">
+                    <option value="4">Spontanée (4)</option>
+                    <option value="3">À la parole (3)</option>
+                    <option value="2">À la douleur (2)</option>
+                    <option value="1">Aucune (1)</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Réponse verbale</label>
+                <select id="gcs-v">
+                    <option value="5">Orientée (5)</option>
+                    <option value="4">Confuse (4)</option>
+                    <option value="3">Mots inappropriés (3)</option>
+                    <option value="2">Sons incompréhensibles (2)</option>
+                    <option value="1">Aucune (1)</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Réponse motrice</label>
+                <select id="gcs-m">
+                    <option value="6">Obéit aux ordres (6)</option>
+                    <option value="5">Localise la douleur (5)</option>
+                    <option value="4">Flexion normale (4)</option>
+                    <option value="3">Flexion anormale (3)</option>
+                    <option value="2">Extension (2)</option>
+                    <option value="1">Aucune (1)</option>
+                </select>
+            </div>
+            <button class="btn" onclick="calculateGCS()">Calculer</button>
+            <div class="result" id="gcs-result"></div>
+        </div>
+    </div>
+
+    <script>
+        function showCalculator(type) {
+            document.querySelectorAll('.calculator').forEach(calc => {
+                calc.style.display = 'none';
+            });
+            document.getElementById(type + '-calc').style.display = 'block';
+        }
+        
+        function calculatePAM() {
+            const pas = parseFloat(document.getElementById('pas').value);
+            const pad = parseFloat(document.getElementById('pad').value);
+            const pam = (pas + 2 * pad) / 3;
+            
+            document.getElementById('pam-result').innerHTML = 
+                `PAM = ${pam.toFixed(1)} mmHg`;
+        }
+        
+        function calculateGCS() {
+            const e = parseInt(document.getElementById('gcs-e').value);
+            const v = parseInt(document.getElementById('gcs-v').value);
+            const m = parseInt(document.getElementById('gcs-m').value);
+            const total = e + v + m;
+            
+            document.getElementById('gcs-result').innerHTML = 
+                `Score de Glasgow = ${total}/15`;
+        }
+    </script>
+</body>
+</html>
